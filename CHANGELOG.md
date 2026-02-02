@@ -1,6 +1,26 @@
-## 8.1.3
+## 8.1.8
 ### iOS
 - fix [1367](https://github.com/miguelpruivo/flutter_file_picker/issues/1367)
+
+## 8.1.7
+### iOS 
+Fix Image Picker to Handle Partial Failures Gracefully [#1554](https://github.com/miguelpruivo/flutter_file_picker/issues/1554)
+
+## 8.1.6
+### Android
+Fix [#1643](https://github.com/miguelpruivo/flutter_file_picker/issues/1643)
+
+## 8.1.5
+### Android
+Fix [#872](https://github.com/miguelpruivo/flutter_file_picker/issues/872)
+
+## 8.1.4
+### iOS
+- Fixes a crash when sometimes user swipe the modal down and call it again. [1357](https://github.com/miguelpruivo/flutter_file_picker/issues/1357)
+
+## 8.1.3
+### Android
+- Fixes a null object reference error [#1604](https://github.com/miguelpruivo/flutter_file_picker/issues/1604)
 
 ## 8.1.2
 ### Android
