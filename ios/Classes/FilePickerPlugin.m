@@ -507,10 +507,15 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
         return;
     }
 
-    NSMutableArray<NSURL *> * urls = [[NSMutableArray alloc] init];
+    NSMutableArray<NSURL *> * urls = [[NSMutableArray alloc] initWithCapacity:results.count];
     NSMutableArray<NSString *> * errors = [[NSMutableArray alloc] init];
     NSMutableArray<NSString *> * errorsUtiTypes = [[NSMutableArray alloc] init];
-    
+
+    // Initialize array with NSNull placeholders otherwise throws [NSRangeException]
+    for (int i = 0; i < results.count; i++) {
+        [urls addObject:[NSNull null]];
+    }
+
     self.group = dispatch_group_create();
     
     // Create image directory if it doesn't exist
@@ -599,7 +604,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 
                                         // Write to destination
                                         if ([imageData writeToURL:destinationUrl options:NSDataWritingAtomic error:&loadError]) {
-                                            [urls addObject:destinationUrl];
+                                            urls[index] = destinationUrl;
                                         } else {
                                             [errors addObject:[NSString stringWithFormat:@"Failed to save image at index %ld: %@",
                                                 (long)index, loadError.localizedDescription]];
@@ -626,7 +631,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
                                 } else {
                                     // Write to destination
                                     if ([imageData writeToURL:destinationUrl options:NSDataWritingAtomic error:&loadError]) {
-                                        [urls addObject:destinationUrl];
+                                        urls[index] = destinationUrl;
                                     } else {
                                         [errors addObject:[NSString stringWithFormat:@"Failed to save image at index %ld: %@",
                                             (long)index, loadError.localizedDescription]];
@@ -669,14 +674,21 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
         if(self->_eventSink != nil) {
             self->_eventSink([NSNumber numberWithBool:NO]);
         }
-
-        if (urls.count > 0) {
+        
+        NSMutableArray<NSURL *> * filteredUrls = [NSMutableArray array];
+        for (NSURL * url in urls) {
+            if (url != [NSNull null]) {
+                [filteredUrls addObject:url];
+            }
+        }
+        
+        if (filteredUrls.count > 0) {
             // If we have at least one successful image, return the results
             if (errors.count > 0) {
                 // Log errors but don't fail the operation
                 Log(@"Some images failed to process: %@, with utitypes: %@", [errors componentsJoinedByString:@", "], [errorsUtiTypes componentsJoinedByString:@", "]);
             }
-            [self handleResult:urls];
+            [self handleResult:filteredUrls];
         } else {
             // Only if all images failed, return an error
             NSString *errorDetails = [NSString stringWithFormat:@"Failed to process any images: %@, with utitypes: %@", [errors componentsJoinedByString:@", "], [errorsUtiTypes componentsJoinedByString:@", "]];
