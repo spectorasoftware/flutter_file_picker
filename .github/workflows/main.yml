@@ -12,8 +12,8 @@ jobs:
     outputs:
       flutter-versions: ${{ steps.id_flutter_versions.outputs.versions }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
       - name: Fetch Flutter versions
         id: id_flutter_versions
         run: dart tool/fetch_versions.dart >> $GITHUB_OUTPUT
@@ -27,14 +27,14 @@ jobs:
         flutter: ${{ fromJson(needs.setup_flutter_versions.outputs.flutter-versions) }}
     name: Tests on Flutter ${{ matrix.flutter }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         if: matrix.flutter == 'stable' || matrix.flutter == 'beta'
         with:
           channel: ${{ matrix.flutter }}
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         if: matrix.flutter != 'stable' && matrix.flutter != 'beta'
         with:
           flutter-version: ${{ matrix.flutter }}
@@ -62,8 +62,8 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     name: Tests & Builds on ${{ matrix.os }} (channel stable)
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
 
@@ -128,8 +128,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Web (example app)
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
       - run: flutter --version
